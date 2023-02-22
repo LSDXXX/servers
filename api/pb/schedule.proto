@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+// option go_package = "schedule";
+
+package schedule;
+
+service TaskNotifier {
+	rpc StartTask(TaskNotifyRequest) returns (TaskNotifyReply);
+}
+
+message TaskNotifyRequest {
+	int64 id =1;
+	string flowId = 2; 
+	int64 projectId = 3;
+	string seqPath = 4;
+	int64 state = 5;
+	string bussinessData = 6;
+	string errMessage = 7;
+	string workerID =8;
+	Timestamp created = 9;
+}  
+
+message Timestamp {
+	int64 seconds = 1;
+	int32 nanos = 2;
+}
+
+message TaskNotifyReply {
+	int32 code = 1;
+	string message = 2;
+	string errMessage = 3;
+}

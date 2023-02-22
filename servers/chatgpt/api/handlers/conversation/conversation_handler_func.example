@@ -1,0 +1,6 @@
+package conversation
+
+func (imp *ConversationHandlerImp) Ask(req AskReq) (string, error) {
+	//TODO:
+
+}

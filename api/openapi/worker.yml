@@ -1,0 +1,326 @@
+openapi: 3.0.0
+info:
+  description: logic-engine-worker api
+  version: "1.0.0"
+  title: worker api 
+  contact:
+    email: you@your-company.com
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+paths:
+  /deploy/json:
+    post:
+      tags:
+        - workermannager 
+      operationId:  deployFlowUseJson
+      summary: deploy flow use json 
+      description: 
+        deploy
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Flow'
+      responses:
+        '200':
+          description: deploy result 
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+  
+  /debugflow:
+    post:
+      operationId: debugFlow 
+      summary: debug flow 
+      description: 
+        debug
+      parameters:
+        - name: projectId
+          required: false
+          in: query
+          schema:
+            type: integer
+            format: int
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FlowDebugInfo'
+      responses:
+        '200':
+          description: deploy result 
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+  
+  /db/listtable:
+    get:
+      operationId: dbListTable
+      parameters:
+        - name: projectId
+          required: true
+          in: query
+          schema:
+            type: integer  
+            format: int
+        - name: id
+          required: false
+          in: query
+          schema:
+            type: string
+        
+        - name: database
+          required: true
+          in: query
+          schema:
+            type: string
+        - name: type
+          required: true
+          in: query
+          schema:
+            type: integer
+            format: int
+      
+      responses:
+        '200':
+          description: list table result
+  
+  /db/listdatabase:
+    get: 
+      operationId: dbListDatabase
+      parameters:
+        - name: projectId
+          required: true
+          in: query
+          schema:
+            type: integer  
+            format: int
+        - name: id
+          required: false
+          in: query
+          schema:
+            type: string
+        - name: type
+          required: true
+          in: query
+          schema:
+            type: integer
+            format: int
+      responses:
+        '200':
+          description: list database result
+  
+  /db/tabledesc:
+    get:
+      operationId: dbTableDesc
+      parameters:
+        - name: projectId
+          required: true
+          in: query
+          schema:
+            type: integer  
+            format: int
+        - name: id
+          required: false
+          in: query
+          schema:
+            type: string
+        - name: database
+          required: true
+          in: query
+          schema: 
+            type: string
+
+        - name: table 
+          required: true
+          in: query
+          schema: 
+            type: string
+        - name: type
+          required: true
+          in: query
+          schema:
+            type: integer
+            format: int
+      responses:
+        '200':
+          description: desc table res
+  
+  /db/preview:
+    get:
+      operationId: dbPreview
+      parameters:
+        - name: projectId
+          required: true
+          in: query
+          schema:
+            type: integer  
+            format: int
+        - name: id
+          required: false
+          in: query
+          schema:
+            type: string
+        - name: database
+          required: true
+          in: query
+          schema: 
+            type: string
+        - name: table 
+          required: true
+          in: query
+          schema: 
+            type: string
+        - name: type
+          required: true
+          in: query
+          schema:
+            type: integer
+            format: int
+      responses:
+        '200':
+          description: desc table res
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/Message'
+  
+  /taskApi/getInstanceList:
+     get:
+      operationId: getInstanceList 
+      parameters:
+        - name: projectId
+          required: true
+          in: query
+          schema:
+            type: integer  
+            format: int
+        - name: flowId 
+          required: true
+          in: query
+          schema: 
+            type: integer
+            format: int
+        - name: page 
+          required: true
+          in: query
+          schema: 
+            type: integer
+            format: int
+        - name: size 
+          required: true
+          in: query
+          schema: 
+            type: integer
+            format: int
+      responses:
+        '200':
+          description: task instance list 
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/Message'
+  /quota/atomic:
+    get: 
+      operationId: getQuotaAtomic
+      parameters:
+        - name: projectId
+          required: true
+          in: query
+          schema:
+            type: integer  
+            format: int
+        - name: flowId 
+          required: true
+          in: query
+          schema: 
+            type: integer
+            format: int
+      responses:
+        '200':
+          description: task instance list 
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/Message'
+components:
+  schemas:
+    Message:
+      type: object
+      required: 
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          format: int32
+          description: result code
+        message:
+          type: string
+          description: response message
+
+    Flow:
+      type: object
+      required:
+        - flow_id
+        - flow_name
+        - projectId
+        - version
+        - name
+        - flow_json
+      properties:
+        id:
+          type: string
+          default: ''
+        flow_id:
+          type: string
+        projectId:
+          type: integer
+          format: int
+        version:
+          type: integer
+          format: int
+        name:
+          type: string
+        flow_name:
+          type: string
+        flow_json:
+          type: string 
+    
+    FlowDebugInfo:
+      type: object
+      required:
+        - startNode
+        - endNode
+        - triggerMessageItems
+        - flowId
+      properties:
+        startNode:
+          type: string
+        endNode:
+          type: string
+        flowId:
+          type: string
+        triggerMessageItems:
+          type: array
+          items:
+            $ref: '#/components/schemas/TriggerMessageItem'
+
+    TriggerMessageItem:
+      type: object
+      required:
+        - type
+        - data
+        - key
+      properties:
+        type:
+          type: string
+        data:
+          type: string
+        key:
+          type: string

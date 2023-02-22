@@ -1,0 +1,2168 @@
+openapi: 3.0.0
+info:
+  description: logic-engine-coordinator worker manager api
+  version: "1.0.0"
+  title: woker manager api
+  contact:
+    email: you@your-company.com
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+tags:
+  - name: workermannager
+  - name: tenantmannager
+  - name: common
+paths:
+  /admin/worker/listWorkerGroups:
+    get:
+      tags:
+        - workermannager
+      operationId: listWorkerGroups
+      summary: list worker groups
+      description:
+        list worker groups
+      responses:
+        '200':
+          description: list results of worker groups
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListWorkerGroupRes'
+  /admin/worker/getWorkerGroup:
+    get:
+      tags:
+        - workermannager
+      summary: get worker group
+      operationId: getWorkerGroup
+      description:
+        get worker group by id
+      parameters:
+        - name: groupId
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int
+      responses:
+        '200':
+          description: result of worker group match id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetWorkerGroupRes'
+  /admin/worker/getWorker:
+    get:
+      tags:
+        - workermannager
+      summary: get worker
+      operationId: getWorker
+      description:
+        get worker by id
+      parameters:
+        - name: workerId
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: result of worker info match id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetWorkerRes'
+  /admin/worker/listWorkers:
+    get:
+      tags:
+        - workermannager
+      summary: list workers
+      operationId: listWorkers
+      description:
+        list all workers
+      responses:
+        '200':
+          description: result of list worker info
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListWorkersRes'
+  /admin/worker/addWorkerGroup:
+    post:
+      tags:
+        - workermannager
+      summary: add worker group
+      operationId: addWorkerGroup
+      description:
+        add worker group
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WorkerGroup'
+      responses:
+        '200':
+          description: add worker group result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+  /admin/worker/removeWorkerGroup:
+    post:
+      tags:
+        - workermannager
+      summary: remove worker group
+      operationId: removeWorkerGroup
+      parameters:
+        - name: groupId
+          required: true
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: remove worker group
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+  /admin/worker/updateWorkerGroup:
+    post:
+      tags:
+        - workermannager
+      summary: update worker group
+      operationId: updateWorkerGroup
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WorkerGroup'
+      responses:
+        '200':
+          description: remove worker group
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+  /admin/worker/listRunningFlows:
+    get:
+      tags:
+        - workermannager
+      summary: list flows
+      operationId: listRunningFlows
+      description:
+        list all running flows
+      responses:
+        '200':
+          description: result of list running flow info
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListRunningFlowsRes'
+
+  /admin/tenant/listTenants:
+    get:
+      tags:
+        - tenantmannager
+      summary: list tenants
+      operationId: listTenants
+      description:
+        list all tenants
+      responses:
+        '200':
+          description: result of list tenants
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListTenantsRes'
+  /admin/tenant/getTenant:
+    get:
+      tags:
+        - tenantmannager
+      summary: get tenant
+      operationId: getTenant
+      description:
+        get tenant info by tenant id
+      parameters:
+        - name: tenantId
+          required: true
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: result of get tenant
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListTenantsRes'
+  /admin/tenant/listTenantToWorkerGroups:
+    get:
+      tags:
+        - tenantmannager
+      summary: list tenant to worker groups
+      operationId: listTenantToWorkerGroups
+      description:
+        list all tenant to worker groups
+      responses:
+        '200':
+          description: result of list tenant to worker groups
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListTenantToWorkerGroupsRes'
+  /admin/tenant/addTenant:
+    post:
+      tags:
+        - tenantmannager
+      summary: add tenant
+      operationId: addTenant
+      description:
+        add new tenant
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Tenant'
+      responses:
+        '200':
+          description: result of add tenant
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+
+  /admin/tenant/removeTenant:
+    post:
+      tags:
+        - tenantmannager
+      summary: remove tenant
+      operationId: removeTenant
+      description:
+        remove tenant
+      parameters:
+        - name: tenantId
+          required: true
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: result of remove tenant
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+
+  /admin/tenant/updateTenant:
+    post:
+      tags:
+        - tenantmannager
+      summary: update tenant
+      operationId: updateTenant
+      description:
+        update tenant
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Tenant'
+      responses:
+        '200':
+          description: result of update tenant
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+  
+  /admin/tenant/updateTenantToWorkerGroup:
+    post:
+      tags:
+        - tenantmannager
+      summary: update tenant to worker group
+      operationId: updateTenantToWorkerGroup
+      description:
+        update tenant to worker group
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TenantToWorkerGroup'
+      responses:
+        '200':
+          description: result of update tenant to worker group
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+  
+  /admin/tenant/addTenantToWorkerGroup:
+    post:
+      tags:
+        - tenantmannager
+      summary: add tenant to worker group
+      operationId: addTenantToWorkerGroup
+      description:
+        add tenant to worker group
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TenantToWorkerGroup'
+      responses:
+        '200':
+          description: result of add tenant to worker group
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+  
+  /admin/tenant/removeTenantToWorkerGroup:
+    post:
+      tags:
+        - tenantmannager
+      summary: remove tenant to worker group
+      operationId: removeTenantToWorkerGroup
+      description:
+        remove tenant to worker group
+      parameters:
+        - name: id
+          required: true
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: result of add tenant to worker group
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+  /commonChannel:
+    post:
+      tags:
+        - common
+      summary: Communication channel between worker and editor
+      operationId: commonChannel
+      description: Communication channel between worker and editor
+      parameters:
+        - name: projectId
+          required: false
+          in: query
+          schema:
+            type: integer
+            format: int
+        - name: async
+          required: false
+          in: query
+          schema:
+            type: boolean
+        - name: castType
+          required: false
+          in: query
+          schema:
+            type: string
+        - name: topic
+          required: false
+          in: query
+          schema:
+            type: string
+      requestBody:
+        required: false 
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CommonChannelReq'
+
+      responses:
+        '200':
+          description: result of common channel
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+  /fromWorker/listWorkerGroupProjects:
+    get:
+      tags:
+        - common
+      summary: list worker's projectIds
+      operationId: listWorkerGroupProjects
+      description: list worker's projectIds
+      parameters:
+        - name: groupId
+          required: true
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: result of list worker group projects
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListWorkerGroupProjectsRes'
+
+  /node/status:
+    get:
+      tags:
+        - common
+      summary: get nodes status by flow id
+      operationId: getNodesStatusByFlowID
+      description: get node status by flow id
+      parameters:
+        - name: flowId
+          required: true
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: result of nodes status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetNodesStatusByFlowIDRes'
+  /task/cron/list:
+    get:
+      tags:
+        - common
+      summary: list cron tasks
+      operationId: listCronTasks
+      description: list cron tasks
+      parameters:
+        - name: pagecount
+          required: false
+          in: query
+          schema:
+            type: integer
+            format: int
+        - name: page
+          required: false
+          in: query
+          schema:
+            type: integer
+            format: int
+      responses:
+        '200':
+          description: result of nodes status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListCronTaskRes'
+  
+  /inner/project/config:
+    get:
+      tags:
+        - common
+      summary: get project config by project_id
+      operationId: getProjectConfig
+      description: get project config
+      parameters:
+        - name: projectId
+          required: false
+          in: query
+          schema:
+            type: integer
+            format: int
+      responses:
+        '200':
+          description: result of project config
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetProjectConfigRes'
+
+  /inner/project/config/add:
+    post:
+      tags:
+        - common
+      operationId: addProjectConfig
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectConfig'
+      responses:
+        '200':
+          description: result of project config
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+  
+  #/arm/taskstate:
+  #  get:
+  #    tags:
+  #      - common
+  #    operationId: getArmTaskState
+  #    parameters:
+  #      - name: projectId
+  #        required: false
+  #        in: query
+  #        schema:
+  #          type: integer
+  #          format: int
+  #      - name: flowId
+  #        required: true 
+  #        in: query
+  #        schema:
+  #          type: string
+  #      - name: nodeId
+  #        required: true
+  #        in: query
+  #        schema:
+  #          type: string 
+  #      - name: version
+  #        required: true
+  #        in: query
+  #        schema:
+  #          type: integer
+  #          format: int
+  #    responses:
+  #      '200':
+  #        content:
+  #          application/json:
+  #            schema:
+
+  /flow/deploy:
+    post:
+      tags:
+        - common
+      operationId: deployFlow
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateFlowReq'
+      responses:
+        '200':
+          description: result of deploy flow
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+
+  /flow/stop:
+    post:
+      tags:
+        - common
+      operationId: stopFlow
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateFlowReq'
+      responses:
+        '200':
+          description: result of deploy flow
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+
+  /flow/page:
+    get:
+      tags:
+        - common
+      operationId: pageFlow
+      parameters:
+        - name: projectId
+          required: true
+          in: query
+          schema:
+            type: integer
+            format: int
+        - name: poiCode
+          required: false
+          in: query
+          schema:
+            type: string
+        - name: pageNum
+          required: false
+          in: query
+          schema:
+            type: integer
+            format: int
+        - name: pageSize
+          required: false
+          in: query
+          schema:
+            type: integer
+            format: int
+        - name: keyword
+          required: false
+          in: query
+          schema:
+            type: string
+        - name: tag
+          required: true
+          in: query
+          schema:
+            type: array
+            items:
+              type: integer
+              format: int
+        - name: type
+          required: false
+          in: query
+          schema:
+            type: integer
+            format: int
+      responses:
+        '200':
+          description: result of project config
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageSubFlowRes'
+
+  /flow/get:
+    get:
+      tags:
+        - common
+      operationId: getFlow
+      parameters:
+        - name: flowId
+          required: true
+          in: query
+          schema:
+            type: integer
+            format: int
+        - name: projectId
+          required: true
+          in: query
+          schema:
+            type: integer
+            format: int
+        - name: applyTemplate
+          required: false
+          in: query
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: result of project config
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FlowDetailRes'
+
+  /flow/create:
+    post:
+      tags:
+        - common
+      operationId: createFlow
+      responses:
+        '200':
+          description: result of create flow
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FlowDetailRes'
+
+  /flow/update:
+    post:
+      tags:
+        - common
+      operationId: updateFlow
+      responses:
+        '200':
+          description: result of delete type
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateFlowRes'
+  /flow/uploadThumb:
+    post:
+      tags:
+        - uploadThumb
+      operationId: uploadThumb
+      responses:
+        '200':
+          description: result of delete type
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+
+  /flow/copy:
+    post:
+      tags:
+        - common
+      operationId: copyFlow
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+              required:
+               - flowId
+               - name
+              properties:
+                flowId:
+                    type: integer
+                    format: int
+                name:
+                    type: string
+                    format: binary
+      responses:
+        '200':
+          description: result of project config
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+  /flow/getThumb:
+    get:
+      tags:
+        - common
+      operationId: getThumb
+      parameters:
+        - name: fileName
+          required: false
+          in: query
+          schema:
+            type: string
+        - name: flowId
+          required: false
+          in: query
+          schema:
+            type: integer
+            format: int
+      responses:
+  /node/getNodeList:
+    get:
+      tags:
+        - common
+      operationId: getNodeList
+      parameters:
+        - name: projectId
+          required: false
+          in: query
+          schema:
+            type: integer
+            format: int
+      responses:
+        '200':
+          description: result of project config
+
+  /node/create:
+    post:
+      tags:
+        - common
+      operationId: createNode
+      responses:
+        '200':
+          description: result of delete type
+
+  /node/update:
+    post:
+      tags:
+        - common
+      operationId: updateNode
+      responses:
+        '200':
+          description: result of delete type
+  /node/delete:
+    post:
+      tags:
+        - common
+      operationId: deleteNode
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeleteTypeReq'
+      responses:
+        '200':
+          description: result of delete type
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+
+  /tag/listTags:
+    post:
+      tags:
+        - common
+      operationId: listTags
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ListTagsReq'
+      responses:
+        '200':
+          description: get all tags
+
+  /tag/add:
+    post:
+      tags:
+        - common
+      operationId: addTag
+      parameters:
+        - name: tagName
+          required: true
+          in: query
+          schema:
+            type: string
+        - name: relationId
+          required: true
+          in: query
+          schema:
+            type: integer
+            format: int
+        - name: relationName
+          required: true
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: add tag
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+  /tag/delete:
+    post:
+      tags:
+        - common
+      operationId: deleteTag
+      parameters:
+        - name: tagId
+          required: true
+          in: query
+          schema:
+            type: integer
+            format: int
+        - name: relationId
+          required: true
+          in: query
+          schema:
+            type: integer
+            format: int
+      responses:
+        '200':
+          description: add tag
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+
+  /node/listNode:
+    get:
+      tags:
+        - common
+      operationId: listNode
+      parameters:
+        - name: orgId
+          required: false
+          in: query
+          schema:
+            type: string
+        - name: projectId
+          required: false
+          in: query
+          schema:
+            type: integer
+            format: int
+      responses:
+        '200':
+          description: result of project config
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+
+  /tencentCloud/account:
+    get:
+      tags:
+        - common
+      operationId: getTencentCloudAccount
+      parameters:
+        - name: projectId
+          required: true
+          in: query
+          schema:
+           type: integer
+           format: int
+      responses:
+        '200':
+          description: result of search tencentCloudAccount
+
+  /tencentCloud/templateId:
+    get:
+      tags:
+        - common
+      operationId: getTemplateId
+      parameters:
+        - name: secretId
+          required: true
+          in: query
+          schema:
+            type: string
+        - name: projectId
+          required: true
+          in: query
+          schema:
+            type: integer
+            format: int
+      responses:
+        '200':
+          description: result of search TemplateId
+  /tencentCloud/getTemplate:
+    get:
+      tags:
+        - common
+      operationId: getTemplate
+      parameters:
+        - name: templateId
+          required: true
+          in: query
+          schema:
+            type: string
+        - name: secretId
+          required: true
+          in: query
+          schema:
+            type: string
+        - name: projectId
+          required: true
+          in: query
+          schema:
+            type: integer
+            format: int
+      responses:
+        '200':
+          description: result of search TemplateContent
+  /quota/create:
+    post:
+      tags:
+        - common
+      operationId: createQuota
+      responses:
+        '200':
+          description: result of create quota
+  /quota/update:
+    post:
+      tags:
+        - common
+      operationId: updateQuota
+      responses:
+        '200':
+          description: result of update quota
+  /quota/page:
+    get:
+      tags:
+        - common
+      operationId: pageQuota
+      parameters:
+        - name: projectId
+          required: true
+          in: query
+          schema:
+            type: integer
+            format: int
+        - name: orgId
+          required: true
+          in: query
+          schema:
+            type: string
+        - name: catalogPoiCode
+          required: false
+          in: query
+          schema:
+            type: string
+        - name: keyword
+          required: false
+          in: query
+          schema:
+            type: string
+        - name: isOnline
+          required: false
+          in: query
+          schema:
+            type: boolean
+        - name: isAsc
+          required: false
+          in: query
+          schema:
+            type: boolean
+        - name: pageNum
+          required: false
+          in: query
+          schema:
+            type: integer
+            format: int
+        - name: pageSize
+          required: false
+          in: query
+          schema:
+            type: integer
+            format: int
+        - name: isTemplate
+          required: false
+          in: query
+          schema:
+            type: array
+            items:
+              type: integer
+              format: int
+      responses:
+        '200':
+          description: result of page quota
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+  /quota/get:
+    get:
+      tags:
+        - common
+      operationId: getQuota
+      parameters:
+        - name: quotaId
+          required: true
+          in: query
+          schema:
+            type: integer
+            format: int
+        - name: projectId
+          required: true
+          in: query
+          schema:
+            type: integer
+            format: int
+      responses:
+        '200':
+          description: result of quota detail
+
+components:
+  schemas:
+    Message:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          format: int32
+          description: result code
+        message:
+          type: string
+          description: response message
+    
+    ArmTaskState:
+      type: object
+      required:
+        - taskId
+        - state
+        - errMessage
+      properties:
+        taskId:
+          type: string
+        operate:
+          type: integer
+          format: int
+          enum: [ 2, 7 ]
+          description: >
+            操作类型:
+              * 2 - 创建成功 
+              * 7 - 创建失败
+    
+
+    WorkerGroup:
+      type: object
+      required:
+        - id
+        - num_workers_desired
+        - name
+        - description
+      properties:
+        id:
+          type: integer
+          format: int64
+        num_workers_desired:
+          type: integer
+          format: int
+        name:
+          type: string
+        description:
+          type: string
+
+    WorkerInfo:
+      type: object
+      required:
+        - workerId
+        - groupId
+        - workerName
+        - workerHost
+        - grpcAddr
+      properties:
+        workerId:
+          type: string
+        groupId:
+          type: string
+        workerName:
+          type: string
+        workerHost:
+          type: string
+        grpcAddr:
+          type: string
+
+    FlowInfo:
+      type: object
+      required:
+        - flow_id
+        - flow_name
+        - id
+        - projectId
+        - version
+        - name
+        - deployTimestamps
+        - poiCode
+      properties:
+        id:
+          type: string
+          default: ''
+        flow_id:
+          type: string
+        projectId:
+          type: integer
+          format: int
+        version:
+          type: integer
+          format: int
+        name:
+          type: string
+        flow_name:
+          type: string
+        deployTimestamps:
+          type: integer
+          format: int64
+        poiCode:
+          type: string
+    Tenant:
+      type: object
+      required:
+        - id
+        - projectId
+        - name
+        - description
+      properties:
+        id:
+          type: integer
+          format: int
+        projectId:
+          type: integer
+          format: int
+        name:
+          type: string
+        description:
+          type: string
+
+    TenantToWorkerGroup:
+      type: object
+      required:
+        - id
+        - tenant_id
+        - group_id
+        - description
+      properties:
+        id:
+          type: integer
+          format: int
+        tenant_id:
+          type: integer
+          format: int
+        group_id:
+          type: integer
+          format: int
+        description:
+          type: string
+    
+    FlowStatus:
+      type: object
+      required:
+        - flow_id
+        - receive_count
+        - error_count
+        - node_id
+      properties:
+        flow_id:
+          type: integer
+          format: uint64
+        node_id:
+          type: string
+        receive_count:
+          type: integer
+          format: uint32
+        error_count:
+          type: integer
+          format: uint32
+
+    ProjectConfig:
+      type: object
+      required:
+        - id
+        - project_id
+        - app_key
+        - app_id
+        - app_ticket
+        - dynamic_api_prefix
+        - project_name
+        - row_status
+        - token_url
+      properties:
+        id:
+          type: integer
+          format: int64
+        project_id:
+          type: integer
+          format: int32
+        app_id:
+          type: string
+        app_key:
+          type: string
+        app_ticket:
+          type: string
+        dynamic_api_prefix:
+          type: string
+        project_name:
+          type: string
+        token_url:
+          type: string
+
+    CronTaskInfo:
+      type: object
+      required:
+        - project_id
+        - task_id
+        - spec
+        - start_time
+        - state
+        - created
+        - last_triggered
+        - row_status
+      properties:
+        project_id:
+          type: integer
+          format: int32
+        task_id:
+          type: string
+        spec:
+          type: string
+        start_time:
+          type: string
+        state:
+          type: integer
+          format: int32
+        created:
+          type: string
+        last_triggered:
+          type: string
+        row_status:
+          type: integer
+          format: int
+
+    NodeType:
+      type: object
+      required:
+        - id
+        - projectId
+        - parentId
+        - key
+        - name
+        - createBy
+        - created
+        - modifiedBy
+        - modified
+        - description
+        - rowStatus
+        - type
+      properties:
+        id:
+          type: integer
+          format: int
+        projectId:
+          type: integer
+          format: int
+        parentId:
+          type: integer
+          format: int
+        key:
+          type: string
+        name:
+          type: string
+        createBy:
+          type: string
+        created:
+          type: string
+        modifiedBy:
+          type: string
+        modified:
+          type: string
+        description:
+          type: string
+        rowStatus:
+          type: integer
+          format: int
+        type:
+          type: integer
+          format: int
+    DeleteReq:
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          type: string
+    Flow:
+      type: object
+      required:
+        - id
+        - projectId
+        - flowId
+        - version
+        - name
+        - mode
+        - createdBy
+        - created
+        - modifiedBy
+        - modified
+        - description
+        - rowStatus
+        - typeId
+        - tag
+
+      properties:
+        id:
+          type: integer
+          format: int
+        projectId:
+          type: integer
+          format: int
+        flowId:
+          type: integer
+          format: int
+        version:
+          type: integer
+          format: int
+        name:
+          type: string
+        mode:
+          type: string
+        createdBy:
+          type: string
+        created:
+          type: string
+        modifiedBy:
+          type: string
+        modified:
+          type: string
+        description:
+          type: string
+        rowStatus:
+          type: integer
+          format: int
+        typeId:
+          type: integer
+          format: int
+        tag:
+          type: integer
+          format: int
+    FlowDetail:
+      type: object
+      required:
+        - id
+        - projectId
+        - flowId
+        - version
+        - name
+        - mode
+        - portJson
+        - createdBy
+        - created
+        - modifiedBy
+        - modified
+        - description
+        - rowStatus
+        - type
+        - viewJson
+        - flowJson
+        - thumb
+        - typeId
+      properties:
+        id:
+          type: integer
+          format: int
+        projectId:
+          type: integer
+          format: int
+        flowId:
+          type: integer
+          format: int
+        version:
+          type: integer
+          format: int
+        name:
+          type: string
+        mode:
+          type: string
+        portJson:
+          type: string
+        createdBy:
+          type: string
+        created:
+          type: string
+        modifiedBy:
+          type: string
+        modified:
+          type: string
+        description:
+          type: string
+        rowStatus:
+          type: integer
+          format: int
+        type:
+          type: integer
+          format: int
+        viewJson:
+          type: string
+        flowJson:
+          type: string
+        thumb:
+          type: string
+        typeId:
+          type: integer
+          format: int
+    Catalog:
+      type: object
+      required:
+        - id
+        - projectId
+        - name
+        - shape
+        - createdBy
+        - created
+        - modifiedBy
+        - modified
+        - description
+        - rowStatus
+        - type
+        - typeId
+        - key
+        - schema
+        - tag
+      properties:
+        id:
+          type: integer
+          format: int
+        projectId:
+          type: integer
+          format: int
+        name:
+          type: string
+        shape:
+          type: string
+        createdBy:
+          type: string
+        created:
+          type: string
+        modifiedBy:
+          type: string
+        modified:
+          type: string
+        description:
+          type: string
+        rowStatus:
+          type: integer
+          format: int
+        type:
+          type: integer
+          format: int
+        typeId:
+          type: integer
+          format: int
+        key:
+          type: string
+        schema:
+          type: string
+        tag:
+          type: integer
+          format: int
+
+    UploadThumbParams:
+      type: object
+      required:
+        - flow_id
+        - thumb
+      properties:
+        flow_id:
+          type: integer
+          format: int
+        thumb:
+          type: string
+          format: binary
+
+    CopyFlowReq:
+      type: object
+      required:
+        - flowId
+        - name
+        - poiCode
+      properties:
+        flowId:
+          type: integer
+          format: int
+        name:
+          type: string
+          format: binary
+        poiCode:
+          type: string
+
+    DeleteTypeReq:
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          type: integer
+          format: int
+
+    ApplicationInfo:
+      type: object
+      required:
+        - id
+        - projectId
+        - title
+        - createBy
+        - created
+        - modifiedBy
+        - modified
+        - description
+        - rowStatus
+        - type
+      properties:
+        id:
+          type: integer
+          format: int
+        projectId:
+          type: integer
+          format: int
+        title:
+          type: string
+        modifiedBy:
+          type: string
+        modified:
+          type: string
+        description:
+          type: string
+        rowStatus:
+          type: integer
+          format: int
+        type:
+          type: integer
+          format: int
+    CatalogListReq:
+      type: object
+      required:
+        - orgId
+        - projectId
+        - poiCode
+      properties:
+        orgId:
+          type: string
+        projectId:
+          type: integer
+          format: int
+        poiCode:
+          type: string
+
+    RelationCatalogReq:
+      type: object
+      required:
+        - poiCode
+        - relationId
+      properties:
+        poiCode:
+          type: string
+        relationId:
+          type: integer
+          format: int
+    CreateCatalogReq:
+      type: object
+      required:
+        - orgId
+        - projectId
+        - name
+        - meta
+        - code
+        - poiCode
+      properties:
+        orgId:
+          type: string
+        projectId:
+          type: integer
+          format: int
+        name:
+          type: string
+        meta:
+          type: string
+        code:
+          type: string
+        poiCode:
+          type: string
+
+    RenameCatalogReq:
+      type: object
+      required:
+        - orgId
+        - projectId
+        - name
+        - poiCode
+      properties:
+        orgId:
+          type: string
+        projectId:
+          type: integer
+          format: int
+        name:
+          type: string
+        poiCode:
+          type: string
+
+    DeleteCatalogReq:
+      type: object
+      required:
+        - orgId
+        - projectId
+        - poiCode
+      properties:
+        orgId:
+          type: string
+        projectId:
+          type: integer
+          format: int
+        poiCode:
+          type: string
+
+    DeleteRelationReq:
+      type: object
+      required:
+        - poiCode
+        - relationId
+      properties:
+        poiCode:
+          type: string
+        relationId:
+          type: integer
+          format: int
+
+    ListTagsReq:
+      type: object
+      required:
+        - relationName
+        - projectId
+        - name
+      properties:
+        relationName:
+          type: string
+        projectId:
+          type: integer
+          format: int
+        name:
+          type: string
+
+    CreateCatalogData:
+      type: object
+      required:
+        - orgId
+        - poiCode
+      properties:
+        orgId:
+          type: string
+        poiCode:
+          type: string
+
+    FileAssetCatalogs:
+      type: object
+      required:
+        - id
+        - catalog
+        - code
+        - created
+        - description
+        - help
+        - isAsset
+        - level
+        - meta
+        - name
+        - order
+        - orgId
+        - poiCode
+        - swName
+        - updated
+      properties:
+        id:
+          type: integer
+          format: int
+        catalog:
+          type: string
+        code:
+          type: string
+        created:
+          type: string
+        description:
+          type: string
+        help:
+          type: string
+        isAsset:
+          type: integer
+          format: int
+        level:
+          type: integer
+          format: int
+        meta:
+          type: string
+        name:
+          type: string
+        order:
+          type: integer
+          format: int
+        orgId:
+          type: string
+        poiCode:
+          type: string
+        swName:
+          type: string
+        schema:
+          type: string
+        updated:
+          type: string
+    FlowTemplate:
+      type: object
+      required:
+        - id
+        - name
+        - modified
+        - isCollected
+        - clickedCount
+        - thumb
+      properties:
+        flowId:
+          type: integer
+          format: int
+        name:
+          type: string
+        modified:
+          type: string
+        isCollected:
+          type: integer
+          format: int
+        clickedCount:
+          type: string
+    FlowTemplateDetail:
+      type: object
+      required:
+        - data
+      properties:
+        data:
+          type: object
+          items:
+            $ref: '#/components/schemas/Tag'
+    Tag:
+      type: object
+      required:
+        - tagName
+        - tagId
+      properties:
+        tagId:
+          type: integer
+          format: int
+        tagName:
+          type: string
+
+    CreateApplicationReq:
+      type: object
+      required:
+        - projectId
+        - title
+        - description
+        - poiCode
+        - type
+        - templateId
+      properties:
+        projectId:
+          type: integer
+          format: int
+        title:
+          type: string
+        description:
+          type: string
+        poiCode:
+          type: string
+        type:
+          type: integer
+          format: int
+        templateId:
+          type: integer
+          format: int
+
+    UpdateApplicationReq:
+      type: object
+      required:
+        - id
+        - projectId
+        - title
+        - description
+        - type
+      properties:
+        id:
+          type: integer
+          format: int
+        projectId:
+          type: integer
+          format: int
+        title:
+          type: string
+        description:
+          type: string
+        type:
+          type: integer
+          format: int
+
+    CopyApplicationReq:
+      type: object
+      required:
+        - id
+        - title
+        - description
+      properties:
+        id:
+          type: integer
+          format: int
+        title:
+          type: string
+        description:
+          type: string
+
+
+    ListWorkerGroupProjectsRes:
+      allOf:
+        - $ref: '#/components/schemas/Message'
+        - required:
+            - data
+          properties:
+            data:
+              type: array
+              items:
+                type: integer
+                format: int
+
+    ListWorkerGroupRes:
+      allOf:
+        - $ref: '#/components/schemas/Message'
+        - required:
+            - data
+          properties:
+            data:
+              type: array
+              items:
+                $ref: '#/components/schemas/WorkerGroup'
+
+    GetWorkerGroupRes:
+      allOf:
+        - $ref: '#/components/schemas/Message'
+        - required:
+            - data
+          properties:
+            data:
+              $ref: '#/components/schemas/WorkerGroup'
+
+    GetWorkerRes:
+      allOf:
+        - $ref: '#/components/schemas/Message'
+        - required:
+            - data
+          properties:
+            data:
+              $ref: '#/components/schemas/WorkerInfo'
+
+    ListWorkersRes:
+      allOf:
+        - $ref: '#/components/schemas/Message'
+        - required:
+            - data
+          properties:
+            data:
+              type: array
+              items:
+                $ref: '#/components/schemas/WorkerInfo'
+
+    ListRunningFlowsRes:
+      allOf:
+        - $ref: '#/components/schemas/Message'
+        - required:
+            - data
+          properties:
+            data:
+              type: array
+              items:
+                $ref: '#/components/schemas/FlowInfo'
+
+    ListTenantsRes:
+      allOf:
+        - $ref: '#/components/schemas/Message'
+        - required:
+            - data
+          properties:
+            data:
+              type: array
+              items:
+                $ref: '#/components/schemas/Tenant'
+
+    ListTenantToWorkerGroupsRes:
+      allOf:
+        - $ref: '#/components/schemas/Message'
+        - required:
+            - data
+          properties:
+            data:
+              type: array
+              items:
+                $ref: '#/components/schemas/TenantToWorkerGroup'
+    GetNodesStatusByFlowIDRes:
+      allOf:
+        - $ref: '#/components/schemas/Message'
+        - required:
+            - data
+          properties:
+            data:
+              type: array
+              items:
+                $ref: '#/components/schemas/FlowStatus'
+    ListCronTaskRes:
+      allOf:
+        - $ref: '#/components/schemas/Message'
+        - required:
+            - data
+          properties:
+            data:
+              type: array
+              items:
+                $ref: '#/components/schemas/CronTaskInfo'
+
+    GetProjectConfigRes:
+      allOf:
+        - $ref: '#/components/schemas/Message'
+        - required:
+            - data
+          properties:
+            data:
+              $ref: '#/components/schemas/ProjectConfig'
+    GetTypeListRes:
+      allOf:
+        - $ref: '#/components/schemas/Message'
+        - required:
+            - data
+          properties:
+            data:
+              $ref: '#/components/schemas/NodeType'
+    CreateNodeTypeRes:
+      allOf:
+        - $ref: '#/components/schemas/Message'
+        - required:
+            - data
+          properties:
+            data:
+              $ref: '#/components/schemas/NodeType'
+    PageSubFlowRes:
+      allOf:
+        - $ref: '#/components/schemas/Message'
+        - required:
+            - data
+          properties:
+            data:
+              type: object
+              properties:
+                data:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Flow'
+                count:
+                  type: integer
+                  format: int
+
+
+    FlowDetailRes:
+      allOf:
+        - $ref: '#/components/schemas/Message'
+        - required:
+            - data
+          properties:
+            data:
+              $ref: '#/components/schemas/FlowDetail'
+    CreateFlowRes:
+      allOf:
+        - $ref: '#/components/schemas/Message'
+        - required:
+            - data
+          properties:
+            data:
+              $ref: '#/components/schemas/Flow'
+    UpdateFlowRes:
+      allOf:
+        - $ref: '#/components/schemas/Message'
+        - required:
+            - data
+          properties:
+            data:
+              $ref: '#/components/schemas/FlowDetail'
+    UploadThumbReq:
+      allOf:
+        - $ref: '#/components/schemas/Message'
+        - required:
+            - data
+          properties:
+            data:
+              $ref: '#/components/schemas/UploadThumbParams'
+
+    CatalogListRes:
+      allOf:
+        - $ref: '#/components/schemas/Message'
+        - required:
+            - data
+          properties:
+            data:
+              type: object
+              properties:
+                sources:
+                  type: array
+                poiCode:
+                  type: string
+                meta:
+                  type: string
+                fileAssetCatalogs:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/FileAssetCatalogs'
+
+    CreateCatalogRes:
+      allOf:
+        - $ref: '#/components/schemas/Message'
+        - required:
+            - data
+          properties:
+            data:
+              $ref: '#/components/schemas/CreateCatalogData'
+
+
+    DeleteCatalogRes:
+      allOf:
+        - $ref: '#/components/schemas/Message'
+
+    RenameCatalogRes:
+      allOf:
+        - $ref: '#/components/schemas/Message'
+    RelationCatalogRes:
+      allOf:
+        - $ref: '#/components/schemas/Message'
+    DeleteRelationRes:
+      allOf:
+        - $ref: '#/components/schemas/Message'
+
+    FlowTemplatesRes:
+      allOf:
+        - required:
+            - list
+            - count
+          properties:
+            count:
+              type: integer
+              format: int64
+            list:
+              type: array
+              items:
+                $ref: '#/components/schemas/FlowTemplate'
+
+    CreateApplicationRes:
+      allOf:
+        - $ref: '#/components/schemas/Message'
+        - required:
+            - data
+          properties:
+            data:
+              $ref: '#/components/schemas/ApplicationInfo'
+    PageApplicationRes:
+      allOf:
+        - $ref: '#/components/schemas/Message'
+        - required:
+            - data
+          properties:
+            data:
+              type: object
+              properties:
+                data:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ApplicationInfo'
+                count:
+                  type: integer
+                  format: int
+    UpdateFlowReq:
+      type: object
+      required:
+        - flowId 
+        - projectId 
+      properties:
+        flowId:
+          type: integer
+          format: int
+        projectId:
+          type: integer 
+          format: int
+
+    CommonChannelReq:
+      type: object
+      required:
+        - topic
+        - type
+        - project_id
+        - flow_id 
+        - version
+      properties:
+        topic:
+          type: string
+        type:
+          type: string
+        project_id:
+          type: string
+        flow_id:
+          type: array
+          items:
+              type: string 
+        version:
+          type: array
+          items: 
+            type: integer
+            format: int
+
+
+servers:
+  # Added by API Auto Mocking Plugin
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/LSDXXX/coordinator/1.0.0
+
+#workermannager:   oapi-codegen  -package=workermannager -generate="gin,client,types" -include-tags="workermannager"  -import-mapping=.:github.com/LSDXXX/libs/model api.yml > ./workermannager/api.gen.go
+#tenantmannager:  oapi-codegen  -package=tenantmannager -generate="gin,client,types" -include-tags="tenantmannager"  -import-mapping=.:github.com/LSDXXX/libs/model api.yml > ./tenantmannager/api.gen.go
