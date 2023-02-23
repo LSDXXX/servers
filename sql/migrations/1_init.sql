@@ -9,5 +9,5 @@ CREATE TABLE `user` (
   `name` varchar(30) NOT NULL COMMENT '用户名称',
   `password` varchar(30) NOT NULL COMMENT '用户密码',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `user_name_UNIQUE` (`user_name`)
+  UNIQUE KEY `user_name_UNIQUE` (`name`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='用户表' ;

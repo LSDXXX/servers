@@ -80,11 +80,11 @@ func newJWTAuth(identityKey string, mapper repo.UserMapper) (*jwt.GinJWTMiddlewa
 			return info, nil
 		},
 		Authorizator: func(data interface{}, c *gin.Context) bool {
-			if v, ok := data.(*User); ok && v.UserName == "admin" {
-				return true
-			}
+			// if v, ok := data.(*User); ok && v.UserName == "admin" {
+			// 	return true
+			// }
 
-			return false
+			return true
 		},
 		Unauthorized: func(c *gin.Context, code int, message string) {
 			c.JSON(code, gin.H{

@@ -1,7 +1,7 @@
 import axios from "axios";
 import { Message } from "element-ui";
 const service = axios.create({
-  baseURL: "/",
+  baseURL: window.location.origin,
   timeout: 3 * 1000,
 });
 // 2.请求拦截器
