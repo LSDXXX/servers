@@ -7,9 +7,9 @@ package infra
 import (
 	"gorm.io/gorm"
 
-	"github.com/LSDXXX/libs/model"
-	"github.com/LSDXXX/libs/pkg/container"
-	"github.com/LSDXXX/libs/repo"
+	"git.code.oa.com/welink/logic-engine/libs/model"
+	"git.code.oa.com/welink/logic-engine/libs/pkg/container"
+	"git.code.oa.com/welink/logic-engine/libs/repo"
 )
 
 func init() {
@@ -142,7 +142,7 @@ func (d *UserMapperImp) GetByUserName(name string) (res model.User, err error) {
 		"name": name,
 	}
 	var generateSQL string
-	generateSQL += "select * from user where user_name = @name"
+	generateSQL += "select * from user where name = @name"
 
 	executeSQL := d.DB().Raw(generateSQL, params).Take(&res)
 	err = executeSQL.Error

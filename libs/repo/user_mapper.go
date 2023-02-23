@@ -11,7 +11,7 @@ type UserMapper interface {
 	helper.DAO[UserMapper, model.User]
 
 	//@Sql(select * from @@table
-	//	where user_name = @name
+	//	where name = @name
 	//)
 	//@Result(res)
 	GetByUserName(name string) (res model.User, err error)
