@@ -41,5 +41,4 @@ func Init() {
 
 	conversation.Register(auth.Middleware())
 	chat.Register(auth.Middleware())
-
 }

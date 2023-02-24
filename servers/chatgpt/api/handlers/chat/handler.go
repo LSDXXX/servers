@@ -46,6 +46,7 @@ func (ws *ChatHandler) Use(e *gin.Engine) {
 }
 
 func (ws *ChatHandler) OnUpgrade(c *gin.Context, manager *wsmanager.WSManager) (groupID, clientID string, err error) {
+	log.WithContext(context.Background()).Debugf("mid: %d", len(ws.mids))
 	for _, mid := range ws.mids {
 		mid(c)
 		if c.IsAborted() {
