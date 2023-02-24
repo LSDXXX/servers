@@ -56,10 +56,7 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          let params = {
-            data: this.ruleForm,
-          };
-          authCodeLogin(params).then((res) => {
+          authCodeLogin(this.ruleForm).then((res) => {
             if (res.code === 200) {
               localStorage.clear();
 

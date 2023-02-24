@@ -7,6 +7,7 @@ import (
 	"strconv"
 	"sync"
 
+	"github.com/LSDXXX/libs/api"
 	"github.com/LSDXXX/libs/constant"
 	"github.com/LSDXXX/libs/pkg/container"
 	"github.com/LSDXXX/libs/pkg/log"
@@ -28,7 +29,8 @@ type ChatHandler struct {
 }
 
 func Register(mids ...gin.HandlerFunc) {
-	NewChatHandler()
+	handler := NewChatHandler()
+	api.RegisterHttpRouter(handler)
 }
 
 func NewChatHandler(mids ...gin.HandlerFunc) *ChatHandler {
@@ -37,6 +39,10 @@ func NewChatHandler(mids ...gin.HandlerFunc) *ChatHandler {
 	}
 	util.PanicWhenError(container.Fill(&out))
 	return &out
+}
+
+func (ws *ChatHandler) Use(e *gin.Engine) {
+	e.GET("/api/chat", ws.manager.BuildHTTPHandler(ws))
 }
 
 func (ws *ChatHandler) OnUpgrade(c *gin.Context, manager *wsmanager.WSManager) (groupID, clientID string, err error) {
