@@ -7,9 +7,9 @@ package infra
 import (
 	"gorm.io/gorm"
 
-	"git.code.oa.com/welink/logic-engine/libs/model"
-	"git.code.oa.com/welink/logic-engine/libs/pkg/container"
-	"git.code.oa.com/welink/logic-engine/libs/repo"
+	"github.com/LSDXXX/libs/model"
+	"github.com/LSDXXX/libs/pkg/container"
+	"github.com/LSDXXX/libs/repo"
 )
 
 func init() {
