@@ -5,6 +5,7 @@ import (
 
 	"github.com/LSDXXX/libs/constant"
 	"github.com/LSDXXX/libs/pkg/container"
+	"github.com/LSDXXX/libs/pkg/log"
 	"github.com/LSDXXX/libs/pkg/util"
 	"github.com/LSDXXX/libs/repo"
 	jwt "github.com/appleboy/gin-jwt/v2"
@@ -64,6 +65,7 @@ func newJWTAuth(identityKey string, mapper repo.UserMapper) (*jwt.GinJWTMiddlewa
 		Authenticator: func(c *gin.Context) (interface{}, error) {
 			var loginVals Login
 			if err := c.ShouldBind(&loginVals); err != nil {
+				log.WithContext(c).Errorf("bind login val error: %s", err.Error())
 				return "", jwt.ErrMissingLoginValues
 			}
 			userID := loginVals.Username
