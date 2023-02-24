@@ -32,7 +32,7 @@ export default {
   },
   created() {
     // 建立 WebSocket 连接
-    this.socket = io("ws://localhost:3000");
+    this.socket = io("ws://" + window.Location.hostname +"/");
     this.socket.on("connect", () => {
       console.log("connected to server");
     });
