@@ -57,7 +57,7 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           authCodeLogin(this.ruleForm).then((res) => {
-            if (res.code === 200) {
+            if (res.status === 200) {
               localStorage.clear();
 
               this.$router.push("/chat");

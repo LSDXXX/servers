@@ -32,7 +32,9 @@ export default {
   },
   created() {
     // 建立 WebSocket 连接
-    this.socket = io("ws://" + window.Location.hostname +"/");
+    let url = "ws://" + window.location.host;
+    console.log(url);
+    this.socket = io(url, { path: "/api/chat" });
     this.socket.on("connect", () => {
       console.log("connected to server");
     });

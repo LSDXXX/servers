@@ -29,7 +29,7 @@ type ChatHandler struct {
 }
 
 func Register(mids ...gin.HandlerFunc) {
-	handler := NewChatHandler()
+	handler := NewChatHandler(mids...)
 	api.RegisterHttpRouter(handler)
 }
 
