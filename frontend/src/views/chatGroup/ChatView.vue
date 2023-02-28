@@ -8,7 +8,7 @@
       >
         <div class="message">
           <div class="from">{{ message.from }}</div>
-          <vue-markdown>{{ message.content }}</vue-markdown>
+          <div v-html="content(message.content)"></div>
         </div>
       </div>
     </div>
@@ -29,7 +29,6 @@ export default {
     };
   },
   created() {
-    const marked = require("marked");
     // 建立 WebSocket 连接
     this.socket = new WebSocket("ws://" + window.location.host + "/api/chat");
     this.socket.onopen = function () {
@@ -43,9 +42,7 @@ export default {
         var found = false;
         for (var i = 0; i < chat.messages.length; i++) {
           if (chat.messages[i].id == obj.message.id) {
-            chat.messages[i].content = marked.marked(
-              obj.message.content.parts[0]
-            );
+            chat.messages[i].content = obj.message.content.parts[0];
             found = true;
             break;
           }
@@ -53,7 +50,7 @@ export default {
         if (!found) {
           chat.messages.push({
             id: obj.message.id,
-            content: marked.marked(obj.message.content.parts[0]),
+            content: obj.message.content.parts[0],
             from: "bot",
           });
         }
@@ -73,6 +70,10 @@ export default {
         });
         this.message = "";
       }
+    },
+    content(data) {
+      const marked = require("marked");
+      return marked.marked(data);
     },
   },
 };
