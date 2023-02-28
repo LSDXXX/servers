@@ -8,7 +8,7 @@
       >
         <div class="message">
           <div class="from">{{ message.from }}</div>
-          <vue-markdown>{{ message.content }}</vue-markdown>
+          <div v-html="content(message.content)"></div>
         </div>
       </div>
     </div>
@@ -70,6 +70,10 @@ export default {
         });
         this.message = "";
       }
+    },
+    content(data) {
+      const marked = require("marked");
+      return marked.marked(data);
     },
   },
 };
