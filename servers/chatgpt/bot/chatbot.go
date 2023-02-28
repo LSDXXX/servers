@@ -11,6 +11,7 @@ import (
 	"strings"
 	"sync"
 
+	"github.com/LSDXXX/libs/pkg/log"
 	"github.com/LSDXXX/libs/service"
 	"github.com/google/uuid"
 	"github.com/pkg/errors"
@@ -19,13 +20,19 @@ import (
 var ConversationContainer Conversation
 
 type Chatbot struct {
-	auth *service.OpenAIAuth
-	ctx  context.Context
+	auth     *service.OpenAIAuth
+	ctx      context.Context
+	email    string
+	password string
+	proxy    string
 }
 
 func NewChatbot(email, password, proxy string) *Chatbot {
 	out := &Chatbot{
-		auth: service.NewOpenAIAuth(email, password, proxy),
+		auth:     service.NewOpenAIAuth(email, password, proxy),
+		email:    email,
+		password: password,
+		proxy:    proxy,
 	}
 	err := out.auth.Login()
 	if err != nil {
@@ -88,6 +95,9 @@ func (c *Chatbot) doAsk(content, convId, preConvId string, retry int) (res *http
 		return nil, errors.Wrap(err, "do http request")
 	}
 	if res.StatusCode != 200 {
+		data, _ := ioutil.ReadAll(res.Body)
+		defer res.Body.Close()
+		log.WithContext(c.ctx).Errorf("res: %s", string(data))
 		err := c.auth.Login()
 		if err != nil {
 			return nil, errors.Wrap(err, "login")

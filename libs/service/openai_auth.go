@@ -9,6 +9,7 @@ import (
 	"net/url"
 	"regexp"
 	"strings"
+	"sync"
 
 	"github.com/LSDXXX/libs/pkg/log"
 	http "github.com/bogdanfinn/fhttp"
@@ -27,6 +28,27 @@ type OpenAIAuth struct {
 	sessionToken  string
 	accessToken   string
 	sessionCookie *http.Cookie
+	loginLock     sync.Mutex
+}
+
+func newTLSClient(proxy string) tlsClient.HttpClient {
+	jar := tlsClient.NewCookieJar()
+	options := []tlsClient.HttpClientOption{
+		tlsClient.WithTimeoutSeconds(30),
+		tlsClient.WithClientProfile(tlsClient.Chrome_105),
+		tlsClient.WithNotFollowRedirects(),
+		tlsClient.WithCookieJar(jar), // create cookieJar instance and pass it as argument
+		//tls_client.WithInsecureSkipVerify(),
+	}
+	if len(proxy) != 0 {
+		options = append(options, tlsClient.WithProxyUrl(proxy))
+	}
+
+	client, err := tlsClient.NewHttpClient(tlsClient.NewNoopLogger(), options...)
+	if err != nil {
+		panic("create tls client err: " + err.Error())
+	}
+	return client
 }
 
 func NewOpenAIAuth(email, password, proxy string) *OpenAIAuth {
@@ -36,30 +58,17 @@ func NewOpenAIAuth(email, password, proxy string) *OpenAIAuth {
 		Proxy:     proxy,
 		userAgent: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36",
 	}
-	jar := tlsClient.NewCookieJar()
-	options := []tlsClient.HttpClientOption{
-		tlsClient.WithTimeoutSeconds(30),
-		tlsClient.WithClientProfile(tlsClient.Chrome_105),
-		tlsClient.WithNotFollowRedirects(),
-		tlsClient.WithCookieJar(jar), // create cookieJar instance and pass it as argument
-		//tls_client.WithInsecureSkipVerify(),
-	}
-	if len(out.Proxy) != 0 {
-		options = append(options, tlsClient.WithProxyUrl(out.Proxy))
-	}
-
-	client, err := tlsClient.NewHttpClient(tlsClient.NewNoopLogger(), options...)
-	if err != nil {
-		panic("create tls client err: " + err.Error())
-	}
-	out.client = client
 	return out
 }
 
 func (o *OpenAIAuth) Login() error {
+
 	if len(o.Email) == 0 || len(o.Password) == 0 {
 		return errors.New("email and password is required")
 	}
+	o.loginLock.Lock()
+	defer o.loginLock.Unlock()
+	o.client = newTLSClient(o.Proxy)
 	logrus.Debugf("start login ---")
 	url := "https://explorer.api.openai.com/"
 	headers := map[string][]string{
@@ -446,6 +455,8 @@ func (o *OpenAIAuth) getAccessToken() error {
 }
 
 func (o *OpenAIAuth) AccessToken() string {
+	o.loginLock.Lock()
+	defer o.loginLock.Unlock()
 	return o.accessToken
 }
 
