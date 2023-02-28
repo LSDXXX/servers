@@ -1,10 +1,12 @@
 package wsmanager
 
 import (
+	"context"
 	"net/http"
 	"sync"
 
 	"github.com/LSDXXX/libs/pkg/log"
+	"github.com/LSDXXX/libs/pkg/util"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"github.com/gorilla/websocket"
@@ -203,10 +205,11 @@ func (manager *WSManager) sendAllService() {
 }
 
 // Send send
-//  @receiver manager
-//  @param id
-//  @param group
-//  @param message
+//
+//	@receiver manager
+//	@param id
+//	@param group
+//	@param message
 func (manager *WSManager) Send(id string, group string, message []byte) {
 	data := &MessageData{
 		Id:      id,
@@ -217,9 +220,10 @@ func (manager *WSManager) Send(id string, group string, message []byte) {
 }
 
 // SendGroup group send
-//  @receiver manager
-//  @param group
-//  @param message
+//
+//	@receiver manager
+//	@param group
+//	@param message
 func (manager *WSManager) SendGroup(group string, message []byte) {
 	data := &GroupMessageData{
 		Group:   group,
@@ -229,8 +233,9 @@ func (manager *WSManager) SendGroup(group string, message []byte) {
 }
 
 // SendAll 广播
-//  @receiver manager
-//  @param message
+//
+//	@receiver manager
+//	@param message
 func (manager *WSManager) SendAll(message []byte) {
 	data := &BroadCastMessageData{
 		Message: message,
@@ -239,36 +244,41 @@ func (manager *WSManager) SendAll(message []byte) {
 }
 
 // RegisterClient 注册
-//  @receiver manager
-//  @param client
+//
+//	@receiver manager
+//	@param client
 func (manager *WSManager) RegisterClient(client *WSClient) {
 	manager.Register <- client
 }
 
 // UnRegisterClient 注销
-//  @receiver manager
-//  @param client
+//
+//	@receiver manager
+//	@param client
 func (manager *WSManager) UnRegisterClient(client *WSClient) {
 	manager.UnRegister <- client
 }
 
 // LenGroup num groups
-//  @receiver manager
-//  @return uint
+//
+//	@receiver manager
+//	@return uint
 func (manager *WSManager) LenGroup() uint {
 	return manager.groupCount
 }
 
 // LenClient num clients
-//  @receiver manager
-//  @return uint
+//
+//	@receiver manager
+//	@return uint
 func (manager *WSManager) LenClient() uint {
 	return manager.clientCount
 }
 
 // Info manager info
-//  @receiver manager
-//  @return map
+//
+//	@receiver manager
+//	@return map
 func (manager *WSManager) Info() map[string]interface{} {
 	managerInfo := make(map[string]interface{})
 	managerInfo["groupLen"] = manager.LenGroup()
@@ -282,7 +292,8 @@ func (manager *WSManager) Info() map[string]interface{} {
 }
 
 // NewWSManager new
-//  @return *WSManager
+//
+//	@return *WSManager
 func New() *WSManager {
 	manager := &WSManager{
 		Group:            make(map[string]map[string]*WSClient),
@@ -301,12 +312,57 @@ func New() *WSManager {
 	return manager
 }
 
+type wsEventHandlerWrapper struct {
+	handler WSEventHandler
+}
+
+func (ws *wsEventHandlerWrapper) OnUpgrade(ctx *gin.Context, manager *WSManager) (groupID, clientID string, err error) {
+	defer func() {
+		if r := recover(); r != nil {
+			log.WithContext(context.Background()).Errorf("%+v\n %s", r, util.PrintStack())
+			panic(r)
+		}
+	}()
+	return ws.handler.OnUpgrade(ctx, manager)
+}
+func (ws *wsEventHandlerWrapper) OnClientRegister(c *WSClient) {
+	defer func() {
+		if r := recover(); r != nil {
+			log.WithContext(context.Background()).Errorf("%+v\n %s", r, util.PrintStack())
+			panic(r)
+		}
+	}()
+	ws.handler.OnClientRegister(c)
+}
+func (ws *wsEventHandlerWrapper) OnClientDeregister(c *WSClient) {
+	defer func() {
+		if r := recover(); r != nil {
+			log.WithContext(context.Background()).Errorf("%+v\n %s", r, util.PrintStack())
+			panic(r)
+		}
+	}()
+	ws.handler.OnClientDeregister(c)
+}
+func (ws *wsEventHandlerWrapper) OnClientMessage(c *WSClient, message []byte) error {
+	defer func() {
+		if r := recover(); r != nil {
+			log.WithContext(context.Background()).Errorf("%+v\n %s", r, util.PrintStack())
+			panic(r)
+		}
+	}()
+	return ws.handler.OnClientMessage(c, message)
+}
+
 // BuildHTTPHandler  build http handler
-//  @receiver manager
-//  @param handler
-//  @return *gin.Context
-//  @return func(*gin.Context)
+//
+//	@receiver manager
+//	@param handler
+//	@return *gin.Context
+//	@return func(*gin.Context)
 func (manager *WSManager) BuildHTTPHandler(handler WSEventHandler) func(*gin.Context) {
+	handler = &wsEventHandlerWrapper{
+		handler: handler,
+	}
 	return func(c *gin.Context) {
 		ctx := c.Request.Context()
 

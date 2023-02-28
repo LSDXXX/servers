@@ -5,6 +5,11 @@ import store from "./store";
 import ElementUI from "element-ui";
 import "element-ui/lib/theme-chalk/index.css";
 import socketio from "socket.io-client";
+
+import VueMarkdown from "vue-markdown";
+
+Vue.use(VueMarkdown);
+
 // import VueSocketio from "vue-socket.io";
 import axios from "axios";
 

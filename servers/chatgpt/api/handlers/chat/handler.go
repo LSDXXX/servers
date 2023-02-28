@@ -53,8 +53,7 @@ func (ws *ChatHandler) OnUpgrade(c *gin.Context, manager *wsmanager.WSManager) (
 			return "", "", errors.New("error")
 		}
 	}
-	v, _ := c.Get(constant.JWTIdentityKey)
-	info := v.(auth.IdentityInfo)
+	info := auth.IdentityHandler(c, constant.JWTIdentityKey)
 	return strconv.Itoa(info.Id), info.WSKey, nil
 }
 
@@ -83,6 +82,10 @@ func (ws *ChatHandler) OnClientMessage(c *wsmanager.WSClient, message []byte) er
 			log.WithContext(context.Background()).Errorf("ask stream error: %s", err.Error())
 		}
 		for msg := range ch {
+			parentId := msg.Message.ID
+			conversationId := msg.ConversationID
+			ws.conversation.SetParentId(conversationId, parentId)
+			ws.userMapper.Store(c.Group, conversationId)
 			data, _ := json.Marshal(msg)
 			ws.manager.Send(c.Id, c.Group, data)
 		}

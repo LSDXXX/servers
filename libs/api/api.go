@@ -14,7 +14,6 @@ import (
 	"sync"
 
 	"github.com/LSDXXX/libs/config"
-	"github.com/LSDXXX/libs/constant"
 	"github.com/LSDXXX/libs/infra"
 	"github.com/LSDXXX/libs/pkg/container"
 	"github.com/LSDXXX/libs/pkg/log"
@@ -40,7 +39,7 @@ var (
 )
 
 func init() {
-	http.DefaultClient.Timeout = constant.RPCTimeout
+	// http.DefaultClient.Timeout = constant.RPCTimeout
 }
 
 // StreamMessageHandler handler

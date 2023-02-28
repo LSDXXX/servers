@@ -82,7 +82,8 @@ func (c *Chatbot) doAsk(content, convId, preConvId string, retry int) (res *http
 	}
 
 	req.Header = headers
-	res, err = http.DefaultClient.Do(req)
+	httpClient := http.Client{}
+	res, err = httpClient.Do(req)
 	if err != nil {
 		return nil, errors.Wrap(err, "do http request")
 	}
@@ -137,8 +138,13 @@ func (c *Chatbot) AskStream(content, convId, preConvId string) (<-chan ResponseM
 	ch := make(chan ResponseMessage)
 	go func() {
 		defer close(ch)
+		i := 0
 		for {
 			data, _, err := reader.ReadLine()
+			i++
+			if i <= 3 {
+				continue
+			}
 			if err != nil {
 				break
 			}

@@ -13,6 +13,7 @@ type Login struct {
 }
 
 type IdentityInfo struct {
-	Id    int
-	WSKey string
+	Id       int
+	WSKey    string
+	UserName string
 }

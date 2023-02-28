@@ -36,7 +36,7 @@ func Init() {
 	}
 	api.RegisterHttpRouter(auth)
 	api.RegisterHttpRouter(&staticFileHandler{
-		path: "/root/code/server-bak/frontend/dist",
+		path: "../../frontend/dist",
 	})
 
 	conversation.Register(auth.Middleware())

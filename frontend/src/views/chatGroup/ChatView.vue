@@ -8,7 +8,7 @@
       >
         <div class="message">
           <div class="from">{{ message.from }}</div>
-          <div class="content">{{ message.content }}</div>
+          <vue-markdown>{{ message.content }}</vue-markdown>
         </div>
       </div>
     </div>
@@ -20,8 +20,6 @@
 </template>
 
 <script>
-import io from "socket.io-client";
-
 export default {
   data() {
     return {
@@ -31,27 +29,45 @@ export default {
     };
   },
   created() {
+    const marked = require("marked");
     // 建立 WebSocket 连接
-    let url = "ws://" + window.location.host;
-    console.log(url);
-    this.socket = io(url, { path: "/api/chat" });
-    this.socket.on("connect", () => {
+    this.socket = new WebSocket("ws://" + window.location.host + "/api/chat");
+    this.socket.onopen = function () {
       console.log("connected to server");
-    });
-    // 监听服务端推送的消息
-    this.socket.on("message", (data) => {
-      this.messages.push(data);
-    });
+    };
+    var chat = this;
+    this.socket.onmessage = function (event) {
+      console.log(event);
+      event.data.text().then(function (data) {
+        var obj = JSON.parse(data);
+        var found = false;
+        for (var i = 0; i < chat.messages.length; i++) {
+          if (chat.messages[i].id == obj.message.id) {
+            chat.messages[i].content = marked.marked(
+              obj.message.content.parts[0]
+            );
+            found = true;
+            break;
+          }
+        }
+        if (!found) {
+          chat.messages.push({
+            id: obj.message.id,
+            content: marked.marked(obj.message.content.parts[0]),
+            from: "bot",
+          });
+        }
+      });
+      // this.messages.push(data)
+    };
   },
   methods: {
     send() {
       if (this.message) {
         // 发送消息到服务端
-        this.socket.emit("message", {
-          from: "me",
-          content: this.message,
-        });
+        this.socket.send(this.message);
         this.messages.push({
+          id: "default",
           from: "me",
           content: this.message,
         });

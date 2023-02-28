@@ -5,6 +5,7 @@ import (
 
 	"github.com/LSDXXX/libs/pkg/container"
 	"github.com/LSDXXX/libs/repo"
+	"github.com/spf13/cast"
 )
 
 func init() {
@@ -31,5 +32,5 @@ func (c *ConversationContainerImp) Del(id string) {
 
 func (c *ConversationContainerImp) GetParentId(id string) (string, bool) {
 	v, ok := c.conversations.Load(id)
-	return v.(string), ok
+	return cast.ToString(v), ok
 }
