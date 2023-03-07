@@ -257,6 +257,9 @@ func WithGinContext(c context.Context, ginc *gin.Context) context.Context {
 // @param c
 // @return *Context
 func Get(c context.Context) *Context {
+	if c == nil {
+		return nil
+	}
 	v := c.Value(ctxKey)
 	if v == nil {
 		if v, ok := c.(*gin.Context); ok {
