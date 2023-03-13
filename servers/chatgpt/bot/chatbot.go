@@ -83,7 +83,7 @@ func (c *Chatbot) doAsk(content, convId, preConvId string, retry int) (res *http
 	})
 
 	req, err := http.NewRequest(http.MethodPost,
-		"https://apps.openai.com/api/conversation", bytes.NewBuffer(data))
+		"https://bypass.duti.tech/api/conversation", bytes.NewBuffer(data))
 	if err != nil {
 		return nil, errors.Wrap(err, "new request")
 	}
