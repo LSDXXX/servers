@@ -79,15 +79,27 @@ export default {
       var MarkdownIt = require("markdown-it");
       var hljs = require("highlight.js");
       var md = new MarkdownIt({
+        html: true,
+        linkify: true,
+        breaks: true,
+        typographer: true,
         highlight: function (str, lang) {
           if (lang && hljs.getLanguage(lang)) {
             try {
-              return hljs.highlight(lang, str, true).value;
+              return (
+                '<pre class="hljs"><code>' +
+                hljs.highlight(lang, str, true).value +
+                "</code></pre>"
+              );
             } catch (__) {
               return "";
             }
           }
-          return ""; // 使用额外的默认转义
+          return (
+            '<pre class="hljs"><code>' +
+            md.utils.escapeHtml(str) +
+            "</code></pre>"
+          );
         },
       });
       return md.render(data);
