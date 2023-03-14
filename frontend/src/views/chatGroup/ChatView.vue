@@ -35,6 +35,10 @@ export default {
       console.log("connected to server");
     };
     var chat = this;
+    this.socket.onerror = function () {
+      alert("ws connect error");
+      chat.$router.push("/");
+    };
     this.socket.onmessage = function (event) {
       console.log(event);
       event.data.text().then(function (data) {
@@ -72,8 +76,23 @@ export default {
       }
     },
     content(data) {
-      const marked = require("marked");
-      return marked.marked(data);
+      var MarkdownIt = require("markdown-it");
+      var hljs = require("highlight.js");
+      var md = new MarkdownIt({
+        highlight: function (str, lang) {
+          if (lang && hljs.getLanguage(lang)) {
+            try {
+              return hljs.highlight(lang, str, true).value;
+            } catch (__) {
+              return "";
+            }
+          }
+          return ""; // 使用额外的默认转义
+        },
+      });
+      return md.render(data);
+      // const marked = require("marked");
+      // return marked.marked(data);
     },
   },
 };
