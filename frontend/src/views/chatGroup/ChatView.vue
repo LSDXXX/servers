@@ -53,6 +53,9 @@ export default {
       alert("ws connect error");
       chat.$router.push("/");
     };
+    this.socket.onclose = function () {
+      location.reload();
+    };
     this.socket.onmessage = function (event) {
       console.log(event);
       event.data.text().then(function (data) {
